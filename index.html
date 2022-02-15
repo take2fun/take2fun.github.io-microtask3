@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>実験</title>
+  <script src="processing.js"></script>
+</head>
+
+<body class="box">
+  <script type="text/processing">
+		int scene = 1;
+
+float time = 0;
+time2 = 0;
+float base_time = 0;
+float base_timeA = 0;
+
+int f = 0;
+
+float n = 0;
+
+int rA = int(random(0, 13));
+int rB = int(random(0, 5));
+
+int rank = int(random(1, 5));
+String wordA[] = {"洗濯機", "テレビ", "カメラ", "炊飯器", "パソコン", "エアコン", "レンジ", "イス", "ベッド", "プリンター","机","加湿器", "除湿機"};
+String wordB[] = {"red", "small", "big", "best", "blue"};
+
+int count_answer = 0;
+int count_time[] = {};
+float before_time = 0;
+
+void setup() {
+  size(700, 300);
+  background(255);
+  PFont font = createFont("utf-8", 50);
+  textFont(font);
+  document.getElementById('a_area').style.fontSize = 150+"%";
+  document.getElementById('b_area').style.fontSize = 150+"%";
+}
+
+void draw() {
+  background(255);
+  
+  // scene = 2;
+
+  switch(scene) {
+  case 1:
+    fill(0);
+    textSize(56);
+    textAlign(CENTER);
+    text("Enterキーを押すとスタート", width/2, height/2);
+
+    break;
+
+  case 2:
+    background(255);
+    textSize(46);
+    textAlign(CENTER);
+    fill(0);
+    text("残り時間", width/2-135, height/4-20);
+    text("検索ワード", width/2-170, height/2+50);
+    text("順位", width*3/4, height/2+50);
+    text(wordA[rA], width/2-210, height/2+110);
+    //text(wordB[rB], width/2-40, height/2+60);
+    text(rank, width*3/4, height/2+110);
+    //text("Push Enterkey to Next", width/2, height*3/4+70);
+    noFill();
+    //progressBar
+    rect(width/2-250, height/4, 500, 500/16);
+
+
+    //display information
+    timer();
+    makeProgressBar();
+    nextScene();
+
+    break;
+
+  case 3:
+    background(255);
+    textSize(46);
+    textAlign(CENTER);
+    fill(0);
+    text("終了です．ありがとう！", width/2, height/4);
+    println(count_answer);
+    println(count_time);
+    noLoop();
+    document.getElementById('answer_area').innerHTML = "回答数"+count_answer;
+    document.getElementById('timer_area').innerHTML = "回答時間"+count_time;
+    //text(count_answer,width/4,height/2);
+    //text(count_time,width/4,height*3/4);
+  }
+}
+
+void timer() {
+  if (base_time == 0) {
+      base_time = millis();
+    }
+    time = millis() - base_time;
+    time = time/1000;
+    //text("true_time:"+int(time), width/2, height/2-20);
+    if (time <= 360) {
+      f = 1;
+      time = time * 2/3;
+      //text("slow_time:"+int(time), width/2, height/2);
+      //text("slow", width/2, height/2-200);
+    }
+
+    if (time > 360) {
+      f = 2;
+      if (base_timeA == 0) {
+
+        base_timeA = millis();
+      }
+      time2 = millis() - base_timeA;
+      time2 = time2/1000;
+
+      time2 = time2 * 3/2;
+      time2 = time2 + 240;
+      //text("fast_time:"+int(t), width/2, height/2);
+      //text("fast", width/2, height/2-100);
+    }
+}
+
+void makeProgressBar() {
+  if (f == 1) {
+    n = (600-time)/6;
+  } else if (f == 2) {
+    n = (600-time2)/6;
+  }
+  fill(0, 255, 0);
+  for (int i = 0; i < n; i++) {
+    if (scene == 2) {
+      rect((width/2+250)-5*i, height/4, 5, 500/16);
+    }
+  }
+}
+
+void nextScene() {
+  if (n < 0) {
+    scene = 3;
+  }
+}
+
+
+void keyReleased() {
+  if (scene == 1) {
+    if (keyCode == ENTER) {
+      scene = 2;
+    }
+  } else if (scene == 2) {
+    if (keyCode == ENTER) {
+      count_answer += 1;
+
+      if (int(time-before_time) == 0) {
+      }else{
+        count_time = append(count_time, int(time-before_time));
+        before_time = time;
+      }
+
+      rA = int(random(0, 13));
+      rB = int(random(0, 5));
+      rank = int(random(1, 5));
+    }
+  }
+}
+    </script>
+  <canvas></canvas>
+  <p id="a_area">洗濯機　テレビ　カメラ　炊飯器　パソコン　エアコン</p>
+  <p id="b_area">レンジ　イス　ベッド　プリンター　机　加湿器　除湿機</p>
+
+  <div id="answer_area"></div>
+  <div id="time_area"></div>
+</body>
+
+</html>
