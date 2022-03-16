@@ -18,6 +18,8 @@ float base_timeA = 0;
 
 int f = 0;
 
+int trust_time = 0;
+
 float n = 0;
 
 int rA = int(random(0, 13));
@@ -100,6 +102,7 @@ void timer() {
     }
     time = millis() - base_time;
     time = time/1000;
+    trust_time = time;
     //text("true_time:"+int(time), width/2, height/2-20);
     if (time <= 360) {
       f = 1;
@@ -154,10 +157,10 @@ void keyReleased() {
     if (keyCode == ENTER) {
       count_answer += 1;
 
-      if (int(time-before_time) == 0) {
+      if (int(trust_time - before_time) == 0) {
       }else{
-        count_time = append(count_time, int(time-before_time));
-        before_time = time;
+        count_time = append(count_time, int(trust_time - before_time));
+        before_time = trust_time;
       }
 
       rA = int(random(0, 13));
@@ -172,7 +175,7 @@ void keyReleased() {
   <p id="b_area">レンジ　イス　ベッド　プリンター　机　加湿器　除湿機</p>
 
   <div id="answer_area"></div>
-  <div id="time_area"></div>
+  <div id="timer_area"></div>
 </body>
 
 </html>
